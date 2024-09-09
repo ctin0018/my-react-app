@@ -14,7 +14,6 @@ function App() {
   const [loading, setLoading] = useState(false); // Loading state for API
   const [user, setUser] = useState({name: null});
   const [accessToken, setAccessToken] = useState(null);
-  const [original, setOriginal] = useState([]);
   const [check, setCheck] = useState(false);
   const [inCheck, setInCheck] = useState(false);
 
@@ -84,16 +83,27 @@ function App() {
     setCheck(!check)
     console.log("test", check)
     setInCheck(false)
-    handleFilter(!check, false)
 }
 
 const handleFilterIncompleted = () => {
     console.log("call99")
     setInCheck(!inCheck)
-    console.log(inCheck)
+    console.log(inCheck) // async and dont't await this so is still the previous state
     setCheck(false)
-    handleFilter(false, !inCheck)
 }
+
+const filterTaskList = () => {
+    if (check) {
+        return todos.filter((todo) => todo.isChecked);
+    }
+    else if (inCheck) {
+        return todos.filter((todo) => !todo.isChecked);
+    } else {
+        return todos;
+    }
+}
+
+const filteredTodos = filterTaskList();
 
   return (
     <div className="App">
@@ -112,7 +122,7 @@ const handleFilterIncompleted = () => {
           <button onClick={() => handleClear()}>Reset</button>
 
 
-        {todos.map((todo, index) => (
+        {filteredTodos.map((todo, index) => (
           <li key={index}>
             <input
               type="checkbox"
